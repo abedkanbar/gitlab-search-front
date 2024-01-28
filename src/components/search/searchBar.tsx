@@ -16,6 +16,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, totalResults }) => {
   const [filenamePattern, setFilenamePattern] = useState<string>("");
   const [selectedGroup, setSelectedGroup] = useState<GroupDto>(null);
   const [open, setOpen] = React.useState(true);
+  const [isSearching, setIsSearching] = useState(false);
 
   // masquer l'alerte après 10 secondes
   useEffect(() => {
@@ -30,10 +31,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, totalResults }) => {
     setSelectedGroup(group);
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setOpen(false);
-    onSearch(term, filenamePattern, selectedGroup?.id ?? null);
+    setIsSearching(true);
+    await onSearch(term, filenamePattern, selectedGroup?.id ?? null);
+    setIsSearching(false);
   };
 
   const handleTermChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -85,6 +88,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, totalResults }) => {
           </Alert>
           </Collapse>
         </Grid>
+        { !isSearching && totalResults > 0 ? (<Grid item xs={12}>
+          <Alert severity="info">
+            {totalResults} results found
+          </Alert>
+        </Grid>): null}
         <Grid item xs={2}>
           <Button type="submit" variant="contained" color="primary" disabled={term.trim().length < 4 ? true : false}>
             Search

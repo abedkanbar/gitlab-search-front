@@ -1,41 +1,31 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { CircularProgress } from "@material-ui/core";
 import SearchBar from "./searchBar";
 import SearchResult from "./searchResult";
 import { Alert, Pagination } from "@material-ui/lab";
+import apiService from "../../services/apiservices";
 
 const RESULTS_PER_PAGE = 100;
 
 const SearchComponent: React.FC = () => {
-  const [allResults, setAllResults] = useState<any[]>([]);
-  const [displayResults, setDisplayResults] = useState<any[]>([]);
+  const [allResults, setAllResults] = useState<any[]>(null);
+  const [displayResults, setDisplayResults] = useState<any[]>(null);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [totalResults, setTotalResults] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
   const [count, setCount] = useState<number>(null);
-  const GITLAB_BACKEND_URL = process.env.REACT_APP_GITLAB_BACKEND_URL;
 
   const handleSearch = async (
     term: string,
     filenamePattern: string,
     groupId: number
   ) => {
-    const token = localStorage.getItem("token");
     setCount(null);
     setIsLoading(true);
     try {
-      let url = `${GITLAB_BACKEND_URL}/search?term=${term}&filenamePattern=${filenamePattern}`;
-
-      if (groupId) {
-        url += `&groupId=${groupId}`;
-      }
-
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await apiService.post('/search', {
+        term, filenamePattern, groupId,
       });
       setSearchTerm(term);
       setAllResults(response.data);
@@ -78,10 +68,10 @@ const SearchComponent: React.FC = () => {
         <CircularProgress />
       ) : (
         <>
-          {displayResults.length > 0 ? (
+          {displayResults !== null && displayResults.length > 0 ? (
             <SearchResult results={displayResults} searchTerm={searchTerm} />
           ) : (
-            <Alert severity="info">No results found</Alert>
+            displayResults !== null ? <Alert severity="info">No results found</Alert> : null
           )}
         </>
       )}

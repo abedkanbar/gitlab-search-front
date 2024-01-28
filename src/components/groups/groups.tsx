@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import { GroupDto } from './groupeDto';
 import { debounce } from 'lodash';
+import apiService from '../../services/apiservices';
 
 const Groups = ({onGroupChange}) => {
   const [groups, setGroups] = useState<GroupDto[] | any>([]);
@@ -20,21 +20,18 @@ const Groups = ({onGroupChange}) => {
     }
   };
 
+  const fetchGroupData = async (name: string) => {
+    return await apiService.get<GroupDto[]>('/groups', {
+      params: { name },
+    });
+  };
+
   const fetchGroups = debounce(async (name) => {
     if (name.target.value.length < 2) return;
 
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get<GroupDto[]>(`${process.env.REACT_APP_GITLAB_BACKEND_URL}/groups`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          name: name.target.value,
-        },
-      });
+      const response = await fetchGroupData(name.target.value);
       setGroups([{ id: null, name: 'Any', path: 'Any', fullName: 'Any' }, ...response.data]);
     } catch (error) {
       console.error('Failed to fetch groups', error);
@@ -46,22 +43,13 @@ const Groups = ({onGroupChange}) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get<GroupDto[]>(`${process.env.REACT_APP_GITLAB_BACKEND_URL}/groups`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            name: "services",
-          },
-        });
+        const response = await fetchGroupData("services");
 
-      let groupToSelect = response.data.filter((group) => group.id === 131)[0];
-      setSelectedGroup(groupToSelect);     
-      
-      setGroups([{ id: null, name: 'Any', path: 'Any', fullName: 'Any' }, ...response.data]);
-
+        let groupToSelect = response.data.find((group) => group.id === 131);
+        setSelectedGroup(groupToSelect);     
+        onGroupChange(groupToSelect);
+        
+        setGroups([{ id: null, name: 'Any', path: 'Any', fullName: 'Any' }, ...response.data]);
       } catch (error) {
         console.error('Failed to fetch groups', error);
       } finally {
