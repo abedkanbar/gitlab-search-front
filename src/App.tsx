@@ -1,5 +1,5 @@
 import React, {  } from "react";
-import { Box, Container, Typography } from "@material-ui/core";
+import { Box, Container } from "@material-ui/core";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SearchComponent from "./components/search/searchComponent";
 import Login from "./components/login/login";
