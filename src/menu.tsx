@@ -15,10 +15,16 @@ const Menu = () => {
     <Box sx={{ flexGrow: 1 }}>
     <AppBar position="static">
       <Toolbar>
+      {user ? (
         <Typography variant="h6" style={{ flexGrow: 1 }}>        
           <Button color="inherit" component={RouterLink} to="/">Home</Button>
           <Button color="inherit" component={RouterLink} to="/search">Search</Button>
         </Typography>
+        ) : (
+          <Typography variant="h6" style={{ flexGrow: 1 }}>
+            <Button color="inherit" component={RouterLink} to="/">Home</Button>
+          </Typography>
+        )}
 
         {user ? (
           <Typography variant="h6" style={{ flexGrow: 1 }}>
