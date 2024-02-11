@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import { GroupDto } from './groupeDto';
 import { debounce } from 'lodash';
 import apiService from '../../services/apiservices';
+import { ToastContext } from '../../toast-provider';
 
 const Groups = ({onGroupChange}) => {
   const [groups, setGroups] = useState<GroupDto[] | any>([]);
   const [loading, setLoading] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
+  const { openToast } = useContext(ToastContext);
 
   const handleGroupChange = (event: any, newValue: GroupDto) => {
     if (newValue && newValue.name === 'Any') {
@@ -34,7 +36,7 @@ const Groups = ({onGroupChange}) => {
       const response = await fetchGroupData(name.target.value);
       setGroups([{ id: null, name: 'Any', path: 'Any', fullName: 'Any' }, ...response.data]);
     } catch (error) {
-      console.error('Failed to fetch groups', error);
+      openToast("error in fetching groups", 'error');
     } finally {
       setLoading(false);
     }
@@ -51,7 +53,7 @@ const Groups = ({onGroupChange}) => {
         
         setGroups([{ id: null, name: 'Any', path: 'Any', fullName: 'Any' }, ...response.data]);
       } catch (error) {
-        console.error('Failed to fetch groups', error);
+        openToast("error in fetching groups", 'error');
       } finally {
         setLoading(false);
       }

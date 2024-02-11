@@ -21,7 +21,7 @@ const GitlabCallback = () => {
 
       const accessToken = response.data.access_token;
       localStorage.setItem('token', accessToken);
-      window.location.href = '/search';
+      window.location.href = localStorage.getItem('redirectUrl') || '/home';
     } catch (error) {
       console.error('Erreur lors de la récupération du token:', error);
     }

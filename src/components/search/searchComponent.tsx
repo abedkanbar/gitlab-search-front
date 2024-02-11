@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { CircularProgress } from "@material-ui/core";
 import SearchBar from "./searchBar";
 import SearchResult from "./searchResult";
 import { Alert, Pagination } from "@material-ui/lab";
 import apiService from "../../services/apiservices";
+import { ToastContext } from "../../toast-provider";
 
 const RESULTS_PER_PAGE = 100;
 
@@ -15,6 +16,8 @@ const SearchComponent: React.FC = () => {
   const [totalResults, setTotalResults] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
   const [count, setCount] = useState<number>(null);
+  
+  const { openToast } = useContext(ToastContext);
 
   const handleSearch = async (
     term: string,
@@ -36,7 +39,7 @@ const SearchComponent: React.FC = () => {
         setPage(1);
       }
     } catch (error) {
-      console.error("Erreur lors de la recherche:", error);
+      openToast(`Erreur lors de la recherche: ${error.message}`, 'error', error);
     }
     setIsLoading(false);
   };

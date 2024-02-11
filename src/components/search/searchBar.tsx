@@ -18,7 +18,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, totalResults }) => {
   const [open, setOpen] = React.useState(true);
   const [isSearching, setIsSearching] = useState(false);
 
-  // masquer l'alerte après 10 secondes
   useEffect(() => {
     const timer = setTimeout(() => {
       setOpen(false);
