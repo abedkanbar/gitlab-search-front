@@ -15,11 +15,11 @@ import { AuthProvider } from "./authProvider";
 const App: React.FC = () => {
  
   return (
-    <AuthProvider>
     <BrowserRouter>
-      <Menu />
       <ToastProvider>
       <ToastNotification />
+      <AuthProvider>
+      <Menu />      
       <Container>        
       <Box mt={4}>
         <Routes>
@@ -37,9 +37,9 @@ const App: React.FC = () => {
         </Routes>
         </Box>
       </Container>
+      </AuthProvider>
       </ToastProvider>
     </BrowserRouter>
-    </AuthProvider>
   );
 };
 

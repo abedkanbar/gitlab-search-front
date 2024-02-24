@@ -18,7 +18,11 @@ export const ToastProvider: FC = ({ children }) => {
 
   const openToast = (message: string, variant: 'success' | 'info' | 'warning' | 'error', error?: any) => {
     if(error !== undefined) console.log(error);
-    setMessage(message);
+    var msg = message;
+    if(error?.detail){
+     msg += `\n${error.detail}`;
+    }
+    setMessage(msg);
     setVariant(variant);
     setOpen(true);
   };

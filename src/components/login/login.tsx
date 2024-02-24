@@ -33,6 +33,7 @@ const Login = () => {
         openToast('Token invalid or expired', 'error');
       }
     } catch (error) {
+      localStorage.removeItem("token");
       openToast("Token verification failed:", 'error', error);
     }
   };
