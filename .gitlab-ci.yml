@@ -12,7 +12,7 @@ stages:
 variables:
   NAME: gitlab-search
   DOMAIN: groupe-sterne.com
-  DATACENTER: TRANSP_PROP
+  DATACENTER: ALISE
 
 workflow:
   rules:
