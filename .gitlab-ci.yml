@@ -30,7 +30,6 @@ build:
     - npm install
     - cat "${ENV_VARS}" > .env
     - npm run build
-    - mv web.config ./dist
   artifacts:
     paths:
       - /builds/${CI_PROJECT_PATH}/dist/
