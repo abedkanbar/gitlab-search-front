@@ -18,7 +18,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "sourceMap": true
+    "sourceMap": true,
   },
   "exclude": [
     "node_modules"
