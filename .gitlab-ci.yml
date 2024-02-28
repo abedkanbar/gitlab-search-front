@@ -13,6 +13,15 @@ variables:
   NAME: gitlab-search
   DOMAIN: groupe-sterne.com
   DATACENTER: ALISE
+  HOSTS_CONFIG: STERNE
+
+include: 
+  - project: 'Infra/deploiement/hosts'
+    ref: main
+    file: '${HOSTS_CONFIG}/.hosts-staging.yml'
+    rules:
+      - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
 
 workflow:
   rules:
