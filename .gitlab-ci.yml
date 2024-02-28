@@ -18,7 +18,7 @@ workflow:
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       variables:
-        ENVIRONMENT: recette
+        ENVIRONMENT: staging
         NAME: st-gitlab-search
 
 build:
