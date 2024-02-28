@@ -1,0 +1,50 @@
+image: node:14
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules
+
+stages:
+  - build
+  - deploy
+
+variables:
+  NAME: gitlab-search
+  DOMAIN: groupe-sterne.com
+  DATACENTER: TRANSP_PROP
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      variables:
+        ENVIRONMENT: recette
+        NAME: st-gitlab-search
+
+build:
+  stage: build
+  environment: $ENVIRONMENT
+  tags:
+    - shared-runner
+  script:
+    - npm install
+    - cat "${ENV_VARS}" > .env
+    - npm run build
+    - mv web.config ./dist
+  artifacts:
+    paths:
+      - /builds/${CI_PROJECT_PATH}/dist/
+
+deploy:
+  stage: deploy
+  variables:
+    ARTIFACT_NAME: dist
+    PARENT_JOB: build
+    PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+  trigger:
+    include:
+      - project: 'infra/ansible-roles/sterne-winrm-iis'
+        ref: 'testing'
+        file: '.gitlab-ci.yml'
+  when: manual
+  allow_failure: false
