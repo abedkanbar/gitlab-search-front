@@ -34,7 +34,7 @@ build:
     - mv ./build ./publish
   artifacts:
     paths:
-      - /builds/${CI_PROJECT_PATH}/build/
+      - publish
 
 deploy:
   stage: deploy
