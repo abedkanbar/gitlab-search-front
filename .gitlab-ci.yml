@@ -13,13 +13,8 @@ variables:
   DOMAIN: groupe-sterne.com
   HOSTS_CONFIG: STERNE
   ENVIRONMENT: staging
-  NAME: st-gitlab-search*
+  NAME: st-gitlab-search
   HOSTS: srvstfrtgs1.groupesterne.com
-
-include: 
-  - project: 'Infra/deploiement/hosts'
-    ref: main
-    file: '${HOSTS_CONFIG}/.hosts-staging.yml'
 
 build:
   stage: build
