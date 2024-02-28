@@ -32,12 +32,12 @@ build:
     - npm run build
   artifacts:
     paths:
-      - /builds/${CI_PROJECT_PATH}/dist/
+      - /builds/${CI_PROJECT_PATH}/build/
 
 deploy:
   stage: deploy
   variables:
-    ARTIFACT_NAME: dist
+    ARTIFACT_NAME: build
     PARENT_JOB: build
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID
   trigger:
