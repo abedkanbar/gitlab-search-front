@@ -10,16 +10,11 @@ stages:
   - deploy
 
 variables:
-  NAME: gitlab-search
   DOMAIN: groupe-sterne.com
-  DATACENTER: TRANSP_PROP
-
-workflow:
-  rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-      variables:
-        ENVIRONMENT: recette
-        NAME: st-gitlab-search
+  HOSTS_CONFIG: STERNE
+  ENVIRONMENT: staging
+  NAME: st-gitlab-search
+  HOSTS: srvstfrtgs1.groupesterne.com
 
 build:
   stage: build
@@ -30,9 +25,11 @@ build:
     - npm install
     - cat "${ENV_VARS}" > .env
     - npm run build
+    - mv web.config ./build
+    - mv ./build ./publish
   artifacts:
     paths:
-      - /builds/${CI_PROJECT_PATH}/build/
+      - publish
 
 deploy:
   stage: deploy
@@ -41,9 +38,9 @@ deploy:
     PARENT_JOB: build
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID
   trigger:
-    include:
-      - project: 'infra/ansible-roles/sterne-winrm-iis'
-        ref: 'testing'
-        file: '.gitlab-ci.yml'
+      include:
+      - project: infra/deploiement/winrm-iis
+        ref: main
+        file: ".gitlab-ci.yml"
   when: manual
   allow_failure: false
