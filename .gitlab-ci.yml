@@ -42,5 +42,5 @@ deploy:
       - project: infra/deploiement/winrm-iis
         ref: main
         file: ".gitlab-ci.yml"
-  when: manual
+  when: on_success
   allow_failure: false
