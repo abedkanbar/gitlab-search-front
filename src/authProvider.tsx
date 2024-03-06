@@ -1,16 +1,16 @@
-// AuthProvider.tsx
 import React, { useState, useEffect, FC, useContext } from "react";
 import { UserInfoDto } from "./components/user/userInfoDto";
 import apiService from "./services/apiservices";
 import { AuthContext } from "./authContext";
 import { ToastContext } from "./toast-provider";
+import { LocalStorageConstants } from "./local-storage-constants";
 
 export const AuthProvider: FC = ({ children }) => {
   const [user, setUser] = useState<UserInfoDto | null>(null);  
   const { openToast } = useContext(ToastContext);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = LocalStorageConstants.getString(LocalStorageConstants.Token);
     if (token) {
       const fetchUser = async () => {
         try{
@@ -31,7 +31,7 @@ export const AuthProvider: FC = ({ children }) => {
 
   const logout = (callback: () => void) => {
     setUser(null);
-    localStorage.removeItem("token");
+    LocalStorageConstants.removeItem(LocalStorageConstants.Token);
     callback();
   };
 

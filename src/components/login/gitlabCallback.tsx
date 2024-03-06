@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
+import { LocalStorageConstants } from '../../local-storage-constants';
 
 const GitlabCallback = () => {
   useEffect(() => {
@@ -19,9 +20,9 @@ const GitlabCallback = () => {
         redirect_uri: process.env.REACT_APP_CALLBACK_URL
       });
 
-      const accessToken = response.data.access_token;
-      localStorage.setItem('token', accessToken);
-      window.location.href = localStorage.getItem('redirectUrl') || '/home';
+      const accessToken = response.data.access_token;      
+      LocalStorageConstants.setItem(LocalStorageConstants.Token, accessToken);
+      window.location.href = LocalStorageConstants.getString(LocalStorageConstants.RedirectUrl) || '/home';
     } catch (error) {
       console.error('Erreur lors de la récupération du token:', error);
     }

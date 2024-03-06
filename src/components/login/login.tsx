@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import apiService from "../../services/apiservices";
 import { ToastContext } from "../../toast-provider";
+import { LocalStorageConstants } from "../../local-storage-constants";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const Login = () => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = LocalStorageConstants.getString(LocalStorageConstants.Token);
     if (token) {
       verifyToken();
     } else {
@@ -24,7 +25,7 @@ const Login = () => {
   }, [navigate]);
 
   const verifyToken = async () => {
-    const token = localStorage.getItem("token");
+    const token = LocalStorageConstants.getString(LocalStorageConstants.Token);
     try {
       const response = await apiService.get(`/token/info?token=${token}`);
       if (response.status === 200) {
@@ -33,13 +34,13 @@ const Login = () => {
         openToast('Token invalid or expired', 'error');
       }
     } catch (error) {
-      localStorage.removeItem("token");
+      LocalStorageConstants.removeItem(LocalStorageConstants.Token);
       openToast("Token verification failed:", 'error', error);
     }
   };
 
   const navigateToRedirectUrl = () => {
-    let redirectUrl = localStorage.getItem("redirectUrl");
+    let redirectUrl = LocalStorageConstants.getString(LocalStorageConstants.RedirectUrl);
     if (redirectUrl === "/login" || redirectUrl === "/") {
       redirectUrl = "/";
     }

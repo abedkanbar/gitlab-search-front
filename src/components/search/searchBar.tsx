@@ -62,8 +62,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, totalResults }) => {
             fullWidth
             label="Filename pattern: *.cs, *.md, readme.md, ..."
             value={filenamePattern}
-            onChange={handleFilenameChange}
-            
+            onChange={handleFilenameChange}            
           />
         </Grid>
         <Grid item xs={4}>

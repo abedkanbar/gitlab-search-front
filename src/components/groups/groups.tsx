@@ -5,6 +5,7 @@ import { GroupDto } from './groupeDto';
 import { debounce } from 'lodash';
 import apiService from '../../services/apiservices';
 import { ToastContext } from '../../toast-provider';
+import { LocalStorageConstants } from '../../local-storage-constants';
 
 const Groups = ({onGroupChange}) => {
   const [groups, setGroups] = useState<GroupDto[] | any>([]);
@@ -19,6 +20,7 @@ const Groups = ({onGroupChange}) => {
     } else {
       setSelectedGroup(newValue);
       onGroupChange(newValue);
+      LocalStorageConstants.setItem(LocalStorageConstants.SelectedGroup, newValue);
     }
   };
 
@@ -45,9 +47,20 @@ const Groups = ({onGroupChange}) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetchGroupData("services");
+        let groupDto = LocalStorageConstants.getItem<GroupDto>(LocalStorageConstants.SelectedGroup);
+  
+        let defaultGroupName = "services";
+        let defaultGroupId = 131;
 
-        let groupToSelect = response.data.find((group) => group.id === 131);
+        if(groupDto !== null) {
+          defaultGroupName = groupDto.name;
+          defaultGroupId = groupDto.id;
+        }
+
+        let response = await fetchGroupData(defaultGroupName);        
+
+        response.data = response.data.filter((group) => group.id === defaultGroupId);
+        var groupToSelect = response.data[0];
         setSelectedGroup(groupToSelect);     
         onGroupChange(groupToSelect);
         
