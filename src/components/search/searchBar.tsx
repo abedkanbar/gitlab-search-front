@@ -17,6 +17,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, totalResults }) => {
   const [selectedGroup, setSelectedGroup] = useState<GroupDto>(null);
   const [open, setOpen] = React.useState(true);
   const [isSearching, setIsSearching] = useState(false);
+  const [groupError, setGroupError] = useState(false);
+  const [isTermTextEmpty, setIsTermTextEmpty] = useState(false);
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -30,8 +33,31 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, totalResults }) => {
     setSelectedGroup(group);
   };
 
+  const IsValid = () => {
+    let valid = true;
+    if(term.trim() === "") {
+      setIsTermTextEmpty(true);
+      valid = false;
+    }
+    return valid;
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    // Vérifiez si les champs sont vides
+    const isTermEmpty = term.trim() === "";
+    const isGroupEmpty = selectedGroup === null;
+
+    // Définissez les erreurs
+    setIsTermTextEmpty(isTermEmpty);
+    setGroupError(isGroupEmpty);
+
+    // Si l'un des champs est vide, retournez et n'exécutez pas la recherche
+    if (isTermEmpty || isGroupEmpty) {
+      return;
+    }
+
     setOpen(false);
     setIsSearching(true);
     await onSearch(term, filenamePattern, selectedGroup?.id ?? null);
@@ -40,6 +66,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, totalResults }) => {
 
   const handleTermChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTerm(e.target.value);
+    setIsTermTextEmpty(false);
   };
 
   const handleFilenameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +79,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, totalResults }) => {
         <Grid item xs={4}>
           <TextField
             fullWidth
+            error={isTermTextEmpty}
             label="Search term"
+            helperText={isTermTextEmpty ? "Search term is required" : ""}
             value={term}
             onChange={handleTermChange}
           />
@@ -66,7 +95,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, totalResults }) => {
           />
         </Grid>
         <Grid item xs={4}>
-          <Groups onGroupChange={handleGroupChange}/>
+          <Groups onGroupChange={handleGroupChange} onGroupSelect={() => setGroupError(false)} error={groupError} />
         </Grid>
         <Grid item xs={12}>
         <Collapse in={open}>
@@ -93,7 +122,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, totalResults }) => {
           </Alert>
         </Grid>): null}
         <Grid item xs={2}>
-          <Button type="submit" variant="contained" color="primary" disabled={term.trim().length < 4 ? true : false}>
+          <Button type="submit" variant="contained" color="primary">
             Search
           </Button>
         </Grid>

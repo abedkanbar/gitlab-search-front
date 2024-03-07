@@ -7,7 +7,9 @@ import apiService from '../../services/apiservices';
 import { ToastContext } from '../../toast-provider';
 import { LocalStorageConstants } from '../../local-storage-constants';
 
-const Groups = ({onGroupChange}) => {
+const AnyGroup = { id: null, name: 'Any', path: 'Any', fullName: 'Any' };
+
+const Groups = ({onGroupChange, onGroupSelect, error}) => {
   const [groups, setGroups] = useState<GroupDto[] | any>([]);
   const [loading, setLoading] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -15,12 +17,14 @@ const Groups = ({onGroupChange}) => {
 
   const handleGroupChange = (event: any, newValue: GroupDto) => {
     if (newValue && newValue.name === 'Any') {
-      setSelectedGroup({ id: null, name: 'Any', path: '', fullName: 'Any' });
-      onGroupChange(null);
+      setSelectedGroup(AnyGroup);
+      onGroupChange(null);     
+      onGroupSelect(); 
     } else {
       setSelectedGroup(newValue);
       onGroupChange(newValue);
       LocalStorageConstants.setItem(LocalStorageConstants.SelectedGroup, newValue);
+      onGroupSelect();
     }
   };
 
@@ -36,7 +40,7 @@ const Groups = ({onGroupChange}) => {
     setLoading(true);
     try {
       const response = await fetchGroupData(name.target.value);
-      setGroups([{ id: null, name: 'Any', path: 'Any', fullName: 'Any' }, ...response.data]);
+      setGroups([AnyGroup, ...response.data]);
     } catch (error) {
       openToast("error in fetching groups", 'error');
     } finally {
@@ -48,23 +52,19 @@ const Groups = ({onGroupChange}) => {
     async function fetchData() {
       try {
         let groupDto = LocalStorageConstants.getItem<GroupDto>(LocalStorageConstants.SelectedGroup);
-  
-        let defaultGroupName = "services";
-        let defaultGroupId = 131;
+        if(groupDto !== null && groupDto.id !== null ) {
+          let response = await fetchGroupData(groupDto.name);
+          response.data = response.data.filter((group) => group.id === groupDto.id);
 
-        if(groupDto !== null) {
-          defaultGroupName = groupDto.name;
-          defaultGroupId = groupDto.id;
+          var groupToSelect = response.data[0];
+          setSelectedGroup(groupToSelect);     
+          onGroupChange(groupToSelect);
+          
+          setGroups([AnyGroup, ...response.data]);
+        } else {
+          setGroups([AnyGroup]);
         }
 
-        let response = await fetchGroupData(defaultGroupName);        
-
-        response.data = response.data.filter((group) => group.id === defaultGroupId);
-        var groupToSelect = response.data[0];
-        setSelectedGroup(groupToSelect);     
-        onGroupChange(groupToSelect);
-        
-        setGroups([{ id: null, name: 'Any', path: 'Any', fullName: 'Any' }, ...response.data]);
       } catch (error) {
         openToast("error in fetching groups", 'error');
       } finally {
@@ -86,7 +86,13 @@ const Groups = ({onGroupChange}) => {
       onInput={(event) => fetchGroups(event)}
       value={selectedGroup}
       onChange={handleGroupChange}
-      renderInput={(params) => <TextField {...params} label="Group Search" variant="standard" />}
+      renderInput={(params) => 
+        <TextField 
+          {...params}
+          error={error}
+          helperText={error ? "Group is required" : ""}
+          label="Project Group (type the first characters)"
+          variant="standard" />}
     />
   );
 };
