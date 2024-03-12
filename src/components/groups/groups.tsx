@@ -18,8 +18,9 @@ const Groups = ({onGroupChange, onGroupSelect, error}) => {
   const handleGroupChange = (event: any, newValue: GroupDto) => {
     if (newValue && newValue.name === 'Any') {
       setSelectedGroup(AnyGroup);
-      onGroupChange(null);     
-      onGroupSelect(); 
+      onGroupChange(AnyGroup);     
+      onGroupSelect();      
+      LocalStorageConstants.setItem(LocalStorageConstants.SelectedGroup, AnyGroup);
     } else {
       setSelectedGroup(newValue);
       onGroupChange(newValue);
@@ -63,6 +64,8 @@ const Groups = ({onGroupChange, onGroupSelect, error}) => {
           setGroups([AnyGroup, ...response.data]);
         } else {
           setGroups([AnyGroup]);
+          setSelectedGroup(AnyGroup);
+          onGroupChange(AnyGroup);
         }
 
       } catch (error) {
