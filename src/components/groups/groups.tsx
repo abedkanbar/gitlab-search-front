@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
 import { GroupDto } from './groupeDto';
 import { debounce } from 'lodash';
 import apiService from '../../services/apiservices';
 import { ToastContext } from '../../toast-provider';
 import { LocalStorageConstants } from '../../local-storage-constants';
+import { Autocomplete, TextField } from '@mui/material';
 
 const AnyGroup = { id: null, name: 'Any', path: 'Any', fullName: 'Any' };
 
@@ -82,7 +81,7 @@ const Groups = ({onGroupChange, onGroupSelect, error}) => {
       id="group-search"
       options={groups}
       getOptionLabel={(option: GroupDto) => option.fullName}
-      getOptionSelected={(option: GroupDto, value) => option.fullName === value.fullName}
+      //getOptionSelected={(option: GroupDto, value) => option.fullName === value.fullName}
       style={{ width: 300 }}
       freeSolo
       loading={loading}      

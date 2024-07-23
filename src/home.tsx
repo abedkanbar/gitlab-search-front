@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Typography, Grow, Box } from '@material-ui/core';
+import { Container, Typography, Grow, Box } from '@mui/material';
 import './index.css';
 
 const Home = () => {

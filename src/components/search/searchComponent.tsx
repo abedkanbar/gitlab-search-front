@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import SearchBar from "./searchBar";
 import SearchResult from "./searchResult";
 import { Alert, Pagination } from "@material-ui/lab";

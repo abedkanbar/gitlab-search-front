@@ -4,14 +4,14 @@ import {
   CardContent,
   Typography,
   Link,
-  Box,
-  makeStyles,
+  Box,  
   Accordion,
   AccordionSummary,
   AccordionDetails,
   Grid,
-} from "@material-ui/core";
+} from "@mui/material";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles({
   resultCard: {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Container } from "@material-ui/core";
+import { Box, Container } from "@mui/material";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import SearchComponent from "./components/search/searchComponent";
 import Login from "./components/login/login";
@@ -11,10 +11,12 @@ import Menu from "./menu";
 import { ToastProvider } from "./toast-provider";
 import ToastNotification from "./components/notifications/toast-notification";
 import { AuthProvider } from "./authProvider";
+import { ThemeProviderComponent } from "./themeContext";
+
 
 const App: React.FC = () => {
- 
-  return (
+    return (
+    <ThemeProviderComponent>
     <BrowserRouter>
       <ToastProvider>
       <ToastNotification />
@@ -40,6 +42,7 @@ const App: React.FC = () => {
       </AuthProvider>
       </ToastProvider>
     </BrowserRouter>
+    </ThemeProviderComponent>
   );
 };
 

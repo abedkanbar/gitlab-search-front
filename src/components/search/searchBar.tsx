@@ -1,10 +1,8 @@
 import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
-import { TextField, Button, Grid, Collapse } from "@material-ui/core";
 import Groups from "../groups/groups";
-import { Alert, AlertTitle } from "@material-ui/lab";
-import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { GroupDto } from "../groups/groupeDto";
+import { Alert, AlertTitle, Button, Collapse, Grid, TextField, IconButton } from '@mui/material';
 
 interface SearchBarProps {
   onSearch: (term: string, filename: string, groupId: number | null) => void;
@@ -117,12 +115,12 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, totalResults }) => {
           </Collapse>
         </Grid>
         { !isSearching && totalResults > 0 ? (<Grid item xs={12}>
-          <Alert severity="info">
+          <Alert>
             {totalResults} results found
           </Alert>
         </Grid>): null}
         <Grid item xs={2}>
-          <Button type="submit" variant="contained" color="primary">
+          <Button type="submit" variant="contained" color="primary" >
             Search
           </Button>
         </Grid>

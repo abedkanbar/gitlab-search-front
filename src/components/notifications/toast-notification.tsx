@@ -1,5 +1,5 @@
 import React, { useContext, FC } from 'react';
-import { Snackbar } from '@material-ui/core';
+import { Snackbar } from '@mui/material';
 import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 import { ToastContext } from '../../toast-provider';
 
