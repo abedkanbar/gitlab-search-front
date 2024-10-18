@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import SearchBar from "./searchBar";
 import SearchResult from "./searchResult";
-import { Alert, Pagination } from "@material-ui/lab";
+import { Alert, Pagination } from "@mui/lab";
 import apiService from "../../services/apiservices";
 import { ToastContext } from "../../toast-provider";
 

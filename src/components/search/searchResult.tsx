@@ -10,10 +10,12 @@ import {
   AccordionDetails,
   Grid,
 } from "@mui/material";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { makeStyles } from "@material-ui/core";
+import { ExpandMore } from "@mui/icons-material";
+import { makeStyles } from "@mui/material";
 
-const useStyles = makeStyles({
+function useStyles()
+{
+  return makeStyles({
   resultCard: {
     margin: "1rem 0",
   },
@@ -31,7 +33,7 @@ const useStyles = makeStyles({
     marginTop: 8,
   },
 });
-
+}
 interface Result {
   projectName: string;
   projectPath: string;
@@ -66,14 +68,14 @@ const SearchResult: React.FC<SearchResultProps> = ({ results, searchTerm }) => {
       {Object.entries(groupedResults).map(
         ([projectName, projectResults], index) => (
           <Accordion key={index}>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary expandIcon={<ExpandMore />}>
               <Typography variant="h6">{projectName}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Grid container spacing={2} className={classes.gridContainer}>
+              <Grid container spacing={2} className={classes['gridContainer']}>
                 {projectResults.map((result, resultIndex) => (
                   <Grid item xs={12} sm={12} md={12} lg={12} key={resultIndex}>
-                    <Card className={classes.resultCard}>
+                    <Card className={classes['resultCard']}>
                       <CardContent>
                         <Typography variant="h6">
                           <Link
@@ -101,9 +103,9 @@ const SearchResult: React.FC<SearchResultProps> = ({ results, searchTerm }) => {
                           {result.data.split("\n").map((line, lineIndex) => (
                             <Box
                               key={lineIndex}
-                              className={`${classes.codeLine} ${
+                              className={`${classes['codeLine']} ${
                                 line.includes(searchTerm)
-                                  ? classes.highlightedLine
+                                  ? classes['highlightedLine']
                                   : ""
                               }`}
                             >

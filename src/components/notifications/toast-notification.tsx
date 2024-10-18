@@ -1,6 +1,6 @@
 import React, { useContext, FC } from 'react';
 import { Snackbar } from '@mui/material';
-import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import MuiAlert, { AlertProps } from '@mui/lab/Alert';
 import { ToastContext } from '../../toast-provider';
 
 function Alert(props: AlertProps) {

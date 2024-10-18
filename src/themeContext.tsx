@@ -1,9 +1,15 @@
 import React, { createContext, useState, useMemo, useContext, useEffect } from 'react';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider, Theme, StyledEngineProvider, adaptV4Theme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { grey } from '@mui/material/colors';
 import { LocalStorageConstants } from './local-storage-constants';
 import { PaletteMode } from '@mui/material';
+
+
+declare module '@mui/styles/defaultTheme' {
+  interface DefaultTheme extends Theme {}
+}
+
 
 interface ThemeContextType {
   mode: PaletteMode;
@@ -67,14 +73,16 @@ const ThemeProviderComponent: React.FC<{ children: React.ReactNode }> = ({ child
     },
   });
 
-  const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
+  const theme = useMemo(() => createTheme(adaptV4Theme(getDesignTokens(mode))), [mode]);
 
   return (
     <ThemeContext.Provider value={{ mode, toggleColorMode }}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
-      </ThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          {children}
+        </ThemeProvider>
+      </StyledEngineProvider>
     </ThemeContext.Provider>
   );
 };
