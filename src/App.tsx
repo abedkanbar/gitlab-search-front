@@ -12,6 +12,7 @@ import { ToastProvider } from "./toast-provider";
 import ToastNotification from "./components/notifications/toast-notification";
 import { AuthProvider } from "./authProvider";
 import { ThemeProviderComponent } from "./themeContext";
+import PipelinesPage from "./components/pipelines/pipelinesPage";
 
 
 const App: React.FC = () => {
@@ -33,6 +34,12 @@ const App: React.FC = () => {
           {
           <ProtectedRoute>
               <SearchComponent />
+          </ProtectedRoute>
+          } />
+        <Route path="/pipelines" element=
+          {
+          <ProtectedRoute>
+              <PipelinesPage />
           </ProtectedRoute>
           } />
         <Route path="*" element={<NotFound />} />

@@ -11,7 +11,7 @@ import {
   Grid,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
-import { makeStyles } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
 function useStyles()
 {

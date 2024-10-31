@@ -1,9 +1,9 @@
 import React, { useState, useEffect, FC, useContext } from "react";
-import { UserInfoDto } from "./components/user/userInfoDto";
-import apiService from "./services/apiservices";
 import { AuthContext } from "./authContext";
 import { ToastContext } from "./toast-provider";
 import { LocalStorageConstants } from "./local-storage-constants";
+import GitlabApiClient from "./services/gitlabApiClient";
+import { UserInfoDto } from "./services/baseApiClient";
 
 export const AuthProvider: FC = ({ children }) => {
   const [user, setUser] = useState<UserInfoDto | null>(null);  
@@ -14,8 +14,8 @@ export const AuthProvider: FC = ({ children }) => {
     if (token) {
       const fetchUser = async () => {
         try{
-          const response = await apiService.get<UserInfoDto>("/user");
-          setUser(response.data);
+          const response = await GitlabApiClient.getUserInfo('1.0');
+          setUser(response);
         } catch(error) {
           openToast("Token verification failed:", 'error', error);
         }

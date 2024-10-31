@@ -5,6 +5,7 @@ import SearchResult from "./searchResult";
 import { Alert, Pagination } from "@mui/lab";
 import apiService from "../../services/apiservices";
 import { ToastContext } from "../../toast-provider";
+import GitlabApiClient from "../../services/gitlabApiClient";
 
 const RESULTS_PER_PAGE = 100;
 
@@ -27,15 +28,15 @@ const SearchComponent: React.FC = () => {
     setCount(null);
     setIsLoading(true);
     try {
-      const response = await apiService.post('/search', {
+      const response = await GitlabApiClient.search('1.0', {
         term, filenamePattern, groupId,
       });
       setSearchTerm(term);
-      setAllResults(response.data);
-      setDisplayResults(response.data.slice(0, RESULTS_PER_PAGE));
-      setTotalResults(response.data.length);
-      if (response.data.length) {
-        setCount(Math.ceil(response.data.length / RESULTS_PER_PAGE));
+      setAllResults(response);
+      setDisplayResults(response.slice(0, RESULTS_PER_PAGE));
+      setTotalResults(response.length);
+      if (response.length) {
+        setCount(Math.ceil(response.length / RESULTS_PER_PAGE));
         setPage(1);
       }
     } catch (error) {

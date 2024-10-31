@@ -1,8 +1,8 @@
 import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
 import Groups from "../groups/groups";
 import CloseIcon from '@mui/icons-material/Close';
-import { GroupDto } from "../groups/groupeDto";
 import { Alert, AlertTitle, Button, Collapse, Grid, TextField, IconButton } from '@mui/material';
+import { GroupDto } from "../../services/baseApiClient";
 
 interface SearchBarProps {
   onSearch: (term: string, filename: string, groupId: number | null) => void;

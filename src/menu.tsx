@@ -27,6 +27,7 @@ const Menu = () => {
             <Typography variant="h6" style={{ flexGrow: 1 }}>
               <Button color="inherit" component={RouterLink} to="/">Home</Button>
               <Button color="inherit" component={RouterLink} to="/search">Search</Button>
+              <Button color="inherit" component={RouterLink} to="/pipelines">Pipelines</Button>
             </Typography>
           ) : (
             <Typography variant="h6" style={{ flexGrow: 1 }}>

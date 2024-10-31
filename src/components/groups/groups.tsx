@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { GroupDto } from './groupeDto';
 import { debounce } from 'lodash';
-import apiService from '../../services/apiservices';
 import { ToastContext } from '../../toast-provider';
 import { LocalStorageConstants } from '../../local-storage-constants';
 import { Autocomplete, TextField } from '@mui/material';
+import GitlabApiClient from '../../services/gitlabApiClient';
+import { GroupDto } from '../../services/baseApiClient';
 
 const AnyGroup = { id: null, name: 'Any', path: 'Any', fullName: 'Any' };
 
@@ -29,9 +29,7 @@ const Groups = ({onGroupChange, onGroupSelect, error}) => {
   };
 
   const fetchGroupData = async (name: string) => {
-    return await apiService.get<GroupDto[]>('/groups', {
-      params: { name },
-    });
+    return await GitlabApiClient.getAllGroups('1.0', name);
   };
 
   const fetchGroups = debounce(async (name) => {
@@ -40,7 +38,7 @@ const Groups = ({onGroupChange, onGroupSelect, error}) => {
     setLoading(true);
     try {
       const response = await fetchGroupData(name.target.value);
-      setGroups([AnyGroup, ...response.data]);
+      setGroups([AnyGroup, ...response]);
     } catch (error) {
       openToast("error in fetching groups", 'error');
     } finally {
@@ -54,13 +52,13 @@ const Groups = ({onGroupChange, onGroupSelect, error}) => {
         let groupDto = LocalStorageConstants.getItem<GroupDto>(LocalStorageConstants.SelectedGroup);
         if(groupDto !== null && groupDto.id !== null ) {
           let response = await fetchGroupData(groupDto.name);
-          response.data = response.data.filter((group) => group.id === groupDto.id);
+          response = response.filter((group) => group.id === groupDto.id);
 
-          var groupToSelect = response.data[0];
+          var groupToSelect = response[0];
           setSelectedGroup(groupToSelect);     
           onGroupChange(groupToSelect);
           
-          setGroups([AnyGroup, ...response.data]);
+          setGroups([AnyGroup, ...response]);
         } else {
           setGroups([AnyGroup]);
           setSelectedGroup(AnyGroup);

@@ -1,8 +1,8 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import apiService from "../../services/apiservices";
 import { ToastContext } from "../../toast-provider";
 import { LocalStorageConstants } from "../../local-storage-constants";
+import GitlabApiClient from "../../services/gitlabApiClient";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -27,8 +27,8 @@ const Login = () => {
   const verifyToken = async () => {
     const token = LocalStorageConstants.getString(LocalStorageConstants.Token);
     try {
-      const response = await apiService.get(`/token/info?token=${token}`);
-      if (response.status === 200) {
+      const response = await GitlabApiClient.getTokenInfo('1.0', token)
+      if (response !== null) {
         navigateToRedirectUrl();
       } else {        
         openToast('Token invalid or expired', 'error');
@@ -48,7 +48,6 @@ const Login = () => {
   };
 
   const handleLoginClick = () => {
-    // previousUrl = window.location.pathname;
     const gitlabBaseUrl = process.env.REACT_APP_GITLAB_BASE_URL;
     const clientId = process.env.REACT_APP_CLIENT_ID;
     const redirectUri = encodeURIComponent(process.env.REACT_APP_CALLBACK_URL);

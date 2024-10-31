@@ -26,3 +26,8 @@ code {
   font-size: 50px;
   animation: spin 5s linear infinite;
 }
+
+.running {
+  animation: spin 2s linear infinite;
+  border: 3px solid #1e90ff;
+}
