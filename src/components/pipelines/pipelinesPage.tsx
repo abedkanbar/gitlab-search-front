@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Autocomplete, Button, Paper, Typography, Box, IconButton } from '@mui/material';
+import {
+  TextField,
+  Autocomplete,
+  Button,
+  Paper,
+  Typography,
+  Box,
+  IconButton,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import GitlabApiClient from '../../services/gitlabApiClient';
 import { ProjectDto, ProjectBranchDto } from '../../services/baseApiClient';
@@ -12,16 +24,78 @@ const PipelinesPage: React.FC = () => {
   const [selectedBranches, setSelectedBranches] = useState<{ [key: number]: ProjectBranchDto | null }>({});
   const [activePipelines, setActivePipelines] = useState<{ [key: number]: number | null }>({});
   const [searchValue, setSearchValue] = useState('');
+  const [selectedEnvironment, setSelectedEnvironment] = useState<string>('Preprod');
+  const [lastDeployedBranches, setLastDeployedBranches] = useState<{ [key: number]: string }>({});
+  const [newBranchNames, setNewBranchNames] = useState<{ [key: number]: string }>({});
 
   // Fetch branches function
   const fetchBranches = async (projectId: number) => {
     try {
-      const response = await GitlabApiClient.getLastProjectBranches(projectId, '1.0');
+      let response: ProjectBranchDto[] = [];
+
+      if (selectedEnvironment === 'Preprod') {
+        response = await GitlabApiClient.getLastProjectBranches(projectId, '1.0')
+        // , {
+        //   search: '^preprod/',
+        //   per_page: 5,
+        // });
+      } else if (selectedEnvironment === 'Prod') {
+        //response = await GitlabApiClient.getProjectTags(projectId, '1.0', { per_page: 5 });
+      } else if (selectedEnvironment === 'Staging') {
+        // response = await GitlabApiClient.getProjectBranches(projectId, '1.0', {
+        //   search: '^(master|main)$',
+        // });
+      }
+
       setBranches((prev) => ({ ...prev, [projectId]: response }));
     } catch (error) {
       console.error('Erreur lors de la récupération des branches:', error);
     }
   };
+
+  useEffect(() => {
+    selectedProjects.forEach((project) => {
+      fetchBranches(project.id);
+      fetchLastDeployedBranch(project.id);
+    });
+  }, [selectedEnvironment, selectedProjects]);
+
+  const fetchLastDeployedBranch = async (projectId: number) => {
+    try {
+      let branchName = '';
+
+      if (selectedEnvironment === 'Preprod') {
+        // const pipelines = await GitlabApiClient.getPipelines(projectId, '1.0', {
+        //   ref: 'preprod/*',
+        //   per_page: 1,
+        // });
+        // if (pipelines.length > 0) {
+        //   branchName = pipelines[0].ref;
+        // }
+      } else if (selectedEnvironment === 'Prod') {
+        // const pipelines = await GitlabApiClient.getPipelines(projectId, '1.0', {
+        //   ref: '*',
+        //   per_page: 1,
+        //   scope: 'tags',
+        // });
+        // if (pipelines.length > 0) {
+        //   branchName = pipelines[0].ref;
+        // }
+      } else if (selectedEnvironment === 'Staging') {
+        // const branches = await GitlabApiClient.getProjectBranches(projectId, '1.0', {
+        //   search: '^(master|main)$',
+        // });
+        // if (branches.length > 0) {
+        //   branchName = branches[0].name;
+        // }
+      }
+
+      setLastDeployedBranches((prev) => ({ ...prev, [projectId]: branchName }));
+    } catch (error) {
+      console.error('Erreur lors de la récupération de la dernière branche déployée:', error);
+    }
+  };
+
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -123,38 +197,81 @@ const PipelinesPage: React.FC = () => {
     });
   };
 
+  const createBranch = async (projectId: number) => {
+    const branchName = newBranchNames[projectId];
+    if (!branchName) {
+      alert('Veuillez saisir un nom de branche.');
+      return;
+    }
+    try {
+      // await GitlabApiClient.createBranch(projectId, '1.0', {
+      //   branch: branchName,
+      //   ref: 'main',
+      // });
+      fetchBranches(projectId);
+    } catch (error) {
+      console.error('Erreur lors de la création de la branche:', error);
+    }
+  };
+
   return (
     <div style={{ padding: '20px' }}>
       <Typography variant="h4" gutterBottom>
         Pipelines
       </Typography>
-      <Autocomplete
-        options={projects.filter(
-          (project) => !selectedProjects.some((selected) => selected.id === project.id)
-        )}
-        getOptionLabel={(option ) => option.nameWithNamespace}
-        onChange={handleProjectSelect}
-        inputValue={searchValue}
-        onInputChange={(event, newInputValue) => setSearchValue(newInputValue)}
-        renderInput={(params) => 
-          <TextField 
-            {...params}
-            label="Rechercher un projet"
-            variant="outlined" 
-            onKeyDown={(event) => {
-              // Autoriser les touches de navigation
-              if (['Home', 'End'].includes(event.key) || 
-                  (event.ctrlKey && (event.key === 'ArrowUp' || event.key === 'ArrowDown'))) {
-                event.stopPropagation();
-              }
-            }}
-            />
-          }
-      />
+
+      <Box display="flex" alignItems="center" gap={2}>
+        <Box flex={8}>
+          <Autocomplete
+            options={projects.filter(
+              (project) => !selectedProjects.some((selected) => selected.id === project.id)
+            )}
+            getOptionLabel={(option) => option.nameWithNamespace}
+            onChange={handleProjectSelect}
+            inputValue={searchValue}
+            onInputChange={(event, newInputValue) => setSearchValue(newInputValue)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Rechercher un projet"
+                variant="outlined"
+                onKeyDown={(event) => {
+                  if (
+                    ['Home', 'End'].includes(event.key) ||
+                    (event.ctrlKey && (event.key === 'ArrowUp' || event.key === 'ArrowDown'))
+                  ) {
+                    event.stopPropagation();
+                  }
+                }}
+                fullWidth // Le champ prend toute la largeur disponible du Box parent
+              />
+            )}
+            fullWidth // L'Autocomplete prend toute la largeur du Box parent
+          />
+        </Box>
+
+        <Box flex={4}>
+          <FormControl variant="outlined" fullWidth>
+            <InputLabel id="environment-label">Environnement</InputLabel>
+            <Select
+              labelId="environment-label"
+              value={selectedEnvironment}
+              onChange={(event) => setSelectedEnvironment(event.target.value)}
+              label="Environnement"
+            >
+              <MenuItem value="Preprod">Preprod</MenuItem>
+              <MenuItem value="Prod">Prod</MenuItem>
+              <MenuItem value="Staging">Staging</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+      </Box>
+
+
       <Box mt={4}>
         {selectedProjects.map((project) => (
           <Paper key={project.id} style={{ padding: '10px', marginBottom: '10px', position: 'relative' }}>
-            <Typography style={{ padding: '5px', marginBottom: '5px', position: 'relative' }} variant="h6">
+            <Typography variant="h6" style={{ padding: '5px', marginBottom: '5px' }}>
               {project.nameWithNamespace}
             </Typography>
             <IconButton
@@ -165,12 +282,35 @@ const PipelinesPage: React.FC = () => {
             >
               <DeleteIcon />
             </IconButton>
+
+            <Typography variant="subtitle1">
+              Last branch deployed : {lastDeployedBranches[project.id] || 'None (demande à Abed de corriger cet erreur :p )'}
+            </Typography>
+
+            <Box display="flex" alignItems="center" mt={2}>
+              <TextField
+                label="Nouvelle branche"
+                value={newBranchNames[project.id] || ''}
+                onChange={(event) =>
+                  setNewBranchNames((prev) => ({ ...prev, [project.id]: event.target.value }))
+                }
+                variant="outlined"
+                style={{ marginRight: '10px' }}
+              />
+              <Button variant="contained" color="secondary" onClick={() => createBranch(project.id)}>
+                Créer la branche
+              </Button>
+            </Box>
+
             <Autocomplete
               options={branches[project.id] || []}
               getOptionLabel={(option) => option.name}
               onChange={(event, value) => handleBranchSelect(project.id, value)}
-              renderInput={(params) => <TextField {...params} label="Sélectionner une branche" variant="outlined" />}
+              renderInput={(params) => (
+                <TextField {...params} label="Sélectionner une branche" variant="outlined" style={{ marginTop: '10px' }} />
+              )}
             />
+
             <Button
               variant="contained"
               color="primary"
