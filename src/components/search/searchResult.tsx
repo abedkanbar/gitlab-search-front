@@ -49,7 +49,7 @@ interface SearchResultProps {
 }
 
 const SearchResult: React.FC<SearchResultProps> = ({ results, searchTerm }) => {
-  const gitlabBaseUrl = process.env.REACT_APP_GITLAB_BASE_URL;
+  const gitlabBaseUrl = import.meta.env.VITE_APP_GITLAB_BASE_URL;
 
   const classes = useStyles();
 

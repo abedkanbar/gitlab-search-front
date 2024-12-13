@@ -52,6 +52,6 @@ class CustomApiClient extends Client {
 }
 
 const GitlabApiClient = new CustomApiClient(
-  process.env.REACT_APP_GITLAB_BACKEND_URL || ""
+  import.meta.env.VITE_APP_GITLAB_BACKEND_URL || ""
 );
 export default GitlabApiClient;

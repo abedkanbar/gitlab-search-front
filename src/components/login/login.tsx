@@ -48,9 +48,9 @@ const Login = () => {
   };
 
   const handleLoginClick = () => {
-    const gitlabBaseUrl = process.env.REACT_APP_GITLAB_BASE_URL;
-    const clientId = process.env.REACT_APP_CLIENT_ID;
-    const redirectUri = encodeURIComponent(process.env.REACT_APP_CALLBACK_URL);
+    const gitlabBaseUrl = import.meta.env.VITE_APP_GITLAB_BASE_URL;
+    const clientId = import.meta.env.VITE_APP_CLIENT_ID;
+    const redirectUri = encodeURIComponent(import.meta.env.VITE_APP_CALLBACK_URL);
     const responseType = "code";
     const scope = encodeURIComponent("openid profile api read_api");
 

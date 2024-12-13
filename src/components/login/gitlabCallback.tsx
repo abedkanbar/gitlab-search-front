@@ -12,12 +12,12 @@ const GitlabCallback = () => {
 
   const getAccessToken = async (code) => {
     try {
-      const response = await axios.post(`${process.env.REACT_APP_GITLAB_BASE_URL}/oauth/token`, {
-        client_id: process.env.REACT_APP_CLIENT_ID,
-        client_secret: process.env.REACT_APP_CLIENT_SECRET,
+      const response = await axios.post(`${import.meta.env.VITE_APP_GITLAB_BASE_URL}/oauth/token`, {
+        client_id: import.meta.env.VITE_APP_CLIENT_ID,
+        client_secret: import.meta.env.VITE_APP_CLIENT_SECRET,
         code,
         grant_type: 'authorization_code',
-        redirect_uri: process.env.REACT_APP_CALLBACK_URL
+        redirect_uri: import.meta.env.VITE_APP_CALLBACK_URL
       });
 
       const accessToken = response.data.access_token;      

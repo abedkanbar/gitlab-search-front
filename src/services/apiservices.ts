@@ -2,7 +2,7 @@ import axios from 'axios';
 import { LocalStorageConstants } from '../local-storage-constants';
 
 const apiService = axios.create({
-  baseURL: process.env.REACT_APP_GITLAB_BACKEND_URL,
+  baseURL: import.meta.env.VITE_APP_GITLAB_BACKEND_URL,
 });
 
 apiService.interceptors.request.use((config) => {
